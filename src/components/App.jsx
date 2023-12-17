@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast';
 import ContactsPage from 'pages/ContactPage';
 import HomePage from 'pages/HomePage/HomePage';
 import { Route, Routes } from 'react-router-dom';
@@ -14,6 +15,7 @@ const App = () => {
         </Route>
       </Routes>
       <GlobalStyles />
+      <Toaster />
     </>
   );
 };

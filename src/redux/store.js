@@ -2,39 +2,19 @@ import { configureStore } from '@reduxjs/toolkit';
 import { contactsReducer } from './contactsSlice';
 import { filterReducer } from './filterSlice';
 
-import { combineReducers } from '@reduxjs/toolkit';
-import storage from 'redux-persist/lib/storage';
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
+export const store = configureStore({
+  reducer: { contacts: contactsReducer, filter: filterReducer },
+});
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist: ['contacts'],
+const addAction = () => {
+  return {
+    type: 'add',
+    payload: fetch('/todo'),
+  };
 };
 
-const reducers = combineReducers({
-  contacts: contactsReducer,
-  filter: filterReducer,
-});
-const persistedReducer = persistReducer(persistConfig, reducers);
-
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware(getDefaultMiddleware) {
-    return getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    });
-  },
-});
-export const persistor = persistStore(store);
+const addOperation = text => dispatch => {
+  const todo = fetch('/todo');
+  dispatch(addAction(todo));
+};
+addOperation('text');

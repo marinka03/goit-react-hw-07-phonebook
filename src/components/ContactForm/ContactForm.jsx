@@ -1,12 +1,14 @@
+import toast from 'react-hot-toast';
 import style from '../ContactForm/ContactForm.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/contactsSlice';
+import { addContact } from '../../redux/operations';
+import { selectorContacts } from '../../redux/selectors';
 
 function ContactForm() {
-  const contacts = useSelector(state => state.contacts);
   const dispatch = useDispatch();
+  const { items } = useSelector(selectorContacts);
 
-  const hendleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
     const { name, number } = e.target;
     const contactData = {
@@ -15,8 +17,8 @@ function ContactForm() {
     };
 
     const checkNewContact = contactName => {
-      if (contacts.length >= 0) {
-        return contacts.some(
+      if (items.length >= 0) {
+        return items.some(
           contact => contact.name.toLowerCase() === contactName.toLowerCase()
         );
       }
@@ -24,13 +26,13 @@ function ContactForm() {
     };
 
     checkNewContact(contactData.name)
-      ? alert(`${contactData.name} is already in contact`)
+      ? toast.error(`${contactData.name} already is contact`)
       : dispatch(addContact(contactData));
     e.target.reset();
   };
 
   return (
-    <form className={style.contact__form} onSubmit={hendleSubmit}>
+    <form className={style.contact__form} onSubmit={handleSubmit}>
       <label className={style.name__label}>
         Name
         <input

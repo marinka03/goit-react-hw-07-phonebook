@@ -1,22 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from '../../redux/contactsSlice';
+import { contactsFilter, selectorContacts } from '../../redux/selectors';
+import { deleteContact, fetchContacts } from '../../redux/operations';
 import style from '../ContactList/ContactList.module.css';
 
 function ContactList() {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
-  const contactsFilter = contacts.filter((contact = {}) =>
-    contact.name?.toLowerCase().includes(filter.toLowerCase())
-  );
+  const { isLoading, error } = useSelector(selectorContacts);
+
+  const contacts = useSelector(contactsFilter);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   return (
     <div>
       <ul>
-        {contactsFilter.length === 0 && <p>There are no contacts found!</p>}
-        {contactsFilter.length > 0 &&
-          contactsFilter.map(({ id, name, number }) => (
+        {isLoading && <p>Loading numbers...</p>}
+        {error && <p>{error}</p>}
+
+        {contacts?.length === 0 && !isLoading && (
+          <p>There are no contacts found!</p>
+        )}
+        {contacts?.length > 0 &&
+          contacts.map(({ id, name, number }) => (
             <li key={id} className={style.item}>
               <span className="contact-name">{name + ': '}</span>
               {number}
