@@ -1,14 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { contactsFilter, selectorContacts } from '../../redux/selectors';
-import { deleteContact, fetchContacts } from '../../redux/operations';
+import {
+  selectorContacts,
+  selectorContactsFilter,
+} from '../../redux/selectors';
+import { fetchContacts } from '../../redux/operations';
 import style from '../ContactList/ContactList.module.css';
+import ContactItem from 'components/ContactItem/ContactItem';
 
 function ContactList() {
   const dispatch = useDispatch();
   const { isLoading, error } = useSelector(selectorContacts);
 
-  const contacts = useSelector(contactsFilter);
+  const contactsFtr = useSelector(selectorContactsFilter);
 
   useEffect(() => {
     dispatch(fetchContacts());
@@ -20,23 +24,15 @@ function ContactList() {
         {isLoading && <p>Loading numbers...</p>}
         {error && <p>{error}</p>}
 
-        {contacts?.length === 0 && !isLoading && (
+        {contactsFtr?.length === 0 && !isLoading && (
           <p>There are no contacts found!</p>
         )}
-        {contacts?.length > 0 &&
-          contacts.map(({ id, name, number }) => (
+        {contactsFtr?.length > 0 &&
+          contactsFtr.map(({ id, name, number }) => (
             <li key={id} className={style.item}>
-              <span className="contact-name">{name + ': '}</span>
-              {number}
-              <button
-                className={style.delete__btn}
-                type="reset"
-                onClick={() => dispatch(deleteContact(id))}
-              >
-                Delete
-              </button>
+              <ContactItem name={name} number={number} id={id} />
             </li>
-          ))}
+          )) }
       </ul>
     </div>
   );

@@ -4,7 +4,7 @@ export const selectorFilter = state => state.filter;
 export const selectorContacts = state => state.contacts;
 export const selectorItems = state => state.contacts.items;
 
-export const contactsFilter = createSelector(
+export const selectorContactsFilter = createSelector(
   [selectorItems, selectorFilter],
   (items, filterItems) => {
     return items.filter((contact = {}) =>
